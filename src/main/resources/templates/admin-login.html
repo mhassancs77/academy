@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول الإدارة - منصة الندى</title>
+  <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .login-body {
+            padding: 40px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #78350f;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 1.2rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d3748;
+            box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 55, 72, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .security-note {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-right: 4px solid #e53e3e;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+
+        .security-note strong {
+            color: #e53e3e;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #2d3748;
+        }
+
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <div class="lock-icon">🔐</div>
+    <h1>دخول الإدارة</h1>
+    <p>لوحة تحكم المعلم - منصة الندى</p>
+  </div>
+
+  <div class="login-body">
+    <div th:if="${param.expired}" class="alert alert-warning">
+      ⏱️ انتهت جلستك. يرجى تسجيل الدخول مرة أخرى
+    </div>
+
+    <div th:if="${error}" class="alert alert-error">
+      ❌ <span th:text="${error}">خطأ</span>
+    </div>
+
+    <form action="/admin/login" method="post">
+      <div class="form-group">
+        <label for="username">اسم المستخدم</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input type="text"
+                 id="username"
+                 name="username"
+                 required
+                 autocomplete="username"
+                 placeholder="أدخل اسم المستخدم">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔑</span>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 required
+                 autocomplete="current-password"
+                 placeholder="أدخل كلمة المرور">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-login">
+        🚀 دخول لوحة التحكم
+      </button>
+    </form>
+
+    <div class="security-note">
+      <strong>⚠️ تنبيه أمني:</strong> هذه الصفحة مخصصة لإدارة المنصة فقط.
+      إذا كنت طالباً، يرجى استخدام صفحة تسجيل دخول الطلاب.
+    </div>
+
+    <div class="back-link">
+      <a href="/">← العودة للصفحة الرئيسية</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

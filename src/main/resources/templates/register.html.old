@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل معلم جديد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+            padding: 2rem 0;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+        }
+
+        .register-box {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-large {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .register-box h1 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .register-box p {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border-left: 4px solid #fc8181;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #fc8181;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-align: right;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4c51bf;
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+        }
+
+        small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 81, 191, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #4c51bf;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 1rem;
+            }
+
+            .register-box {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="register-box">
+        <div class="logo-large">🎓</div>
+        <h1>إنشاء حساب معلم</h1>
+        <p>سجل الآن وابدأ في إدارة دروسك مجاناً</p>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <form action="/register" method="post">
+            <div class="form-group">
+                <label>اسم المستخدم <span class="required">*</span></label>
+                <input type="text" name="username" required
+                       placeholder="مثال: ahmed_math"
+                       class="form-input"
+                       autofocus>
+                <small>اختر اسم مستخدم سهل التذكر</small>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور <span class="required">*</span></label>
+                <input type="password" name="password" id="password" required
+                       minlength="6"
+                       placeholder="••••••"
+                       class="form-input">
+                <small>6 أحرف على الأقل</small>
+            </div>
+
+            <div class="form-group">
+                <label>تأكيد كلمة المرور <span class="required">*</span></label>
+                <input type="password" name="confirmPassword" id="confirmPassword" required
+                       minlength="6"
+                       placeholder="••••••"
+                       class="form-input">
+                <small>أعد إدخال كلمة المرور</small>
+            </div>
+
+            <div class="form-group">
+                <label>الاسم الكامل <span class="required">*</span></label>
+                <input type="text" name="fullName" required
+                       placeholder="أحمد محمد"
+                       class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" name="phone"
+                       placeholder="01012345678"
+                       class="form-input">
+            </div>
+
+<!--            <div class="form-group">-->
+<!--                <label>المادة <span class="required">*</span></label>-->
+<!--                <select name="subject" required class="form-input">-->
+<!--                    <option value="">اختر المادة</option>-->
+<!--                    <option value="الرياضيات">الرياضيات</option>-->
+<!--                    <option value="الفيزياء">الفيزياء</option>-->
+<!--                    <option value="الكيمياء">الكيمياء</option>-->
+<!--                    <option value="الأحياء">الأحياء</option>-->
+<!--                    <option value="اللغة العربية">اللغة العربية</option>-->
+<!--                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>-->
+<!--                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>-->
+<!--                    <option value="التاريخ">التاريخ</option>-->
+<!--                    <option value="الجغرافيا">الجغرافيا</option>-->
+<!--                    <option value="الفلسفة">الفلسفة</option>-->
+<!--                    <option value="علم النفس">علم النفس</option>-->
+<!--                    <option value="الاقتصاد">الاقتصاد</option>-->
+<!--                    <option value="الجيولوجيا">الجيولوجيا</option>-->
+<!--                    <option value="مادة أخرى">مادة أخرى</option>-->
+<!--                </select>-->
+            </div>
+
+            <button type="submit" class="btn-submit">✅ إنشاء الحساب</button>
+        </form>
+
+        <a href="/login" class="back-link">← لديك حساب بالفعل? سجل دخول</a>
+    </div>
+</div>
+
+<script>
+    // Password confirmation validation
+    const form = document.querySelector('form');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    form.addEventListener('submit', function(e) {
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('كلمتا المرور غير متطابقتين');
+            confirmPassword.focus();
+            return false;
+        }
+    });
+
+    // Real-time validation feedback
+    confirmPassword.addEventListener('input', function() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.style.borderColor = '#fc8181';
+        } else {
+            confirmPassword.style.borderColor = '#48bb78';
+        }
+    });
+</script>
+</body>
+</html>

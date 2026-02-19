@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>رابط منصتك</title>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            direction: rtl;
+        }
+
+        .header {
+            background: #4c51bf;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-box h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .link-box {
+            background: rgba(255,255,255,0.2);
+            border: 2px dashed rgba(255,255,255,0.5);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .link-display {
+            background: white;
+            color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            word-break: break-all;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .copy-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+        }
+
+        .instructions {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .instructions h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .instructions ol {
+            margin-right: 1.5rem;
+            line-height: 2;
+            color: #4a5568;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .share-btn {
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .share-whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        .share-whatsapp:hover {
+            background: #1da851;
+            transform: translateY(-2px);
+        }
+
+        .share-copy {
+            background: #4c51bf;
+            color: white;
+        }
+
+        .share-copy:hover {
+            background: #434190;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+  <div class="container">
+    <div class="logo">🎓 أكاديمية تدريس</div>
+    <a href="/dashboard" class="btn-back">لوحة التحكم</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="highlight-box">
+    <h1>🔗 رابط منصتك المخصص</h1>
+    <p>شارك هذا الرابط مع طلابك ليتمكنوا من الدخول ومشاهدة الدروس</p>
+
+    <div class="link-box">
+      <div class="link-display" id="portalLink" th:text="${fullLink}">
+        http://localhost:8080/teacher/ahmad
+      </div>
+      <button class="copy-btn" onclick="copyLink()">
+        📋 نسخ الرابط
+      </button>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h2>📤 مشاركة الرابط</h2>
+    <div class="share-buttons">
+      <a th:href="'https://wa.me/?text=ادخل على منصة دروسي: ' + ${fullLink}"
+         target="_blank"
+         class="share-btn share-whatsapp">
+        📱 مشاركة عبر واتساب
+      </a>
+      <button class="share-btn share-copy" onclick="copyLink()">
+        📋 نسخ الرابط
+      </button>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="instructions">
+      <h3>📝 كيف يستخدم الطلاب الرابط؟</h3>
+      <ol>
+        <li>شارك الرابط مع طلابك (واتساب، رسالة، إلخ)</li>
+        <li>الطالب يفتح الرابط</li>
+        <li>يرى الطالب صفحة دخول خاصة بك</li>
+        <li>يدخل اسم المستخدم وكلمة المرور (اللي أنت أعطيتهم إياه)</li>
+        <li>يشاهد دروسه حسب مستواه الدراسي تلقائياً</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h2>✨ مميزات الرابط المخصص</h2>
+    <ul style="margin-right: 1.5rem; line-height: 2; color: #4a5568;">
+      <li>✅ رابط فريد خاص بك</li>
+      <li>✅ يحتوي على اسمك ومادتك</li>
+      <li>✅ الطالب يرى معلوماتك مباشرة</li>
+      <li>✅ يتم تحديد المعلم تلقائياً</li>
+      <li>✅ الطالب يرى دروس مستواه فقط</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+    function copyLink() {
+        const linkElement = document.getElementById('portalLink');
+        const link = linkElement.textContent;
+
+        navigator.clipboard.writeText(link).then(() => {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✅ تم النسخ!';
+            button.style.background = '#48bb78';
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = 'white';
+            }, 2000);
+        });
+    }
+</script>
+</body>
+</html>

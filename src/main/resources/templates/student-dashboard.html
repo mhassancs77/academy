@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>لوحة التحكم - منصة الندى</title>
+  <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(252, 129, 129, 0.3);
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 129, 129, 0.4);
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .welcome-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-card h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .welcome-card p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .grade-badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .dashboard-card:hover::before {
+            transform: translateY(0);
+        }
+
+        .card-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .dashboard-card h2 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-card p {
+            color: #718096;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        .card-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+        }
+
+        /* Coming Soon Cards */
+        .coming-soon {
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .coming-soon::after {
+            content: 'قريباً';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #f6ad55;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-card {
+                padding: 30px 20px;
+            }
+
+            .welcome-card h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-icon {
+                font-size: 4rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-card {
+                padding: 30px;
+            }
+
+            .card-icon {
+                font-size: 4rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .btn-logout {
+                width: 100%;
+                text-align: center;
+            }
+
+            .welcome-section {
+                padding: 30px 15px;
+            }
+
+            .dashboard-content {
+                padding: 30px 15px;
+            }
+
+            .welcome-card h1 {
+                font-size: 1.7rem;
+            }
+
+            .welcome-card p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">📚</span>
+        <span>منصة الندى</span>
+      </div>
+      <a href="/student/logout" class="btn-logout">
+        🚪 تسجيل الخروج
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Welcome Section -->
+<div class="welcome-section">
+  <div class="welcome-card">
+    <div class="welcome-icon">🎉</div>
+    <h1 th:text="'مرحباً، ' + ${studentName} + '!'">مرحباً!</h1>
+    <p>أهلاً بك في منصتك التعليمية</p>
+    <div class="grade-badge" th:text="${studentGrade}">الصف الأول</div>
+  </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="dashboard-content">
+  <div class="container">
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📹</div>
+          <div class="stat-number" th:text="${videoCount ?: '0'}">0</div>
+          <div class="stat-label">دروس متاحة</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💬</div>
+          <div class="stat-number" th:text="${commentCount ?: '0'}">0</div>
+          <div class="stat-label">تعليقاتي</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-number">100%</div>
+          <div class="stat-label">متحمس للتعلم!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Cards -->
+    <div class="dashboard-grid">
+      <!-- My Videos -->
+      <a href="/student/videos" class="dashboard-card">
+        <div class="card-icon">🎥</div>
+        <h2>دروسي</h2>
+        <p>شاهد جميع الدروس المتاحة لصفك الدراسي</p>
+        <span class="card-badge">ابدأ المشاهدة</span>
+      </a>
+
+      <!-- Homework (Coming Soon) -->
+      <div class="dashboard-card coming-soon" style="cursor: not-allowed;">
+        <div class="card-icon">📝</div>
+        <h2>الواجبات</h2>
+        <p>حل الواجبات وتسليمها للمعلمة</p>
+        <span class="card-badge" style="opacity: 0.6;">قريباً</span>
+      </div>
+
+      <!-- Quizzes (Coming Soon) -->
+      <div class="dashboard-card coming-soon" style="cursor: not-allowed;">
+        <div class="card-icon">🎯</div>
+        <h2>الاختبارات</h2>
+        <p>اختبر معلوماتك وتابع تقدمك</p>
+        <span class="card-badge" style="opacity: 0.6;">قريباً</span>
+      </div>
+
+      <!-- Progress (Coming Soon) -->
+      <div class="dashboard-card coming-soon" style="cursor: not-allowed;">
+        <div class="card-icon">📊</div>
+        <h2>تقدمي</h2>
+        <p>تابع مستواك وإنجازاتك</p>
+        <span class="card-badge" style="opacity: 0.6;">قريباً</span>
+      </div>
+
+      <!-- Certificates (Coming Soon) -->
+      <div class="dashboard-card coming-soon" style="cursor: not-allowed;">
+        <div class="card-icon">🏆</div>
+        <h2>شهاداتي</h2>
+        <p>احصل على شهادات إتمام الدروس</p>
+        <span class="card-badge" style="opacity: 0.6;">قريباً</span>
+      </div>
+
+      <!-- Contact Teacher (Coming Soon) -->
+      <div class="dashboard-card coming-soon" style="cursor: not-allowed;">
+        <div class="card-icon">💌</div>
+        <h2>راسل المعلمة</h2>
+        <p>اسأل المعلمة أي سؤال</p>
+        <span class="card-badge" style="opacity: 0.6;">قريباً</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

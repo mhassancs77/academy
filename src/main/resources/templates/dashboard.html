@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم</title>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            direction: rtl;
+        }
+
+        .header {
+            background: #4c51bf;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome {
+            margin-bottom: 2rem;
+        }
+
+        .welcome h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .nav-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .nav-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-card h3 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .nav-card p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        /* Special styling for Student Portal card */
+        .nav-card.student-portal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .nav-card.student-portal h3,
+        .nav-card.student-portal p {
+            color: white;
+        }
+
+        .nav-card.student-portal:hover {
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+  <div class="container">
+    <div class="logo">🎓 أكاديمية تدريس</div>
+    <div class="user-info">
+      <span th:text="${fullName}">المدرس</span>
+      <a href="/logout" class="btn-logout">خروج</a>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="welcome">
+    <h1 th:text="'مرحباً ' + ${fullName}">مرحباً</h1>
+    <p>اختر ما تريد القيام به</p>
+  </div>
+
+  <div class="nav-grid">
+
+    <a href="/upload-video" class="nav-card">
+      <div class="icon">📹</div>
+      <h3>رفع درس جديد</h3>
+      <p>قم برفع فيديو درس جديد</p>
+    </a>
+
+    <a href="/videos" class="nav-card">
+      <div class="icon">🎬</div>
+      <h3>دروسي</h3>
+      <p>عرض وإدارة جميع الدروس</p>
+    </a>
+
+    <a href="/students" class="nav-card">
+      <div class="icon">👥</div>
+      <h3>الطلاب</h3>
+      <p>عرض وإدارة الطلاب</p>
+    </a>
+
+    <a href="/students/add" class="nav-card">
+      <div class="icon">➕</div>
+      <h3>إضافة طالب</h3>
+      <p>إضافة طالب جديد</p>
+    </a>
+
+<!--    <a href="/calendar" class="nav-card">-->
+<!--      <div class="icon">📅</div>-->
+<!--      <h3>الجدول</h3>-->
+<!--      <p>جدولة وعرض الحصص</p>-->
+<!--    </a>-->
+
+<!--    <a href="/sessions/add" class="nav-card">-->
+<!--      <div class="icon">➕</div>-->
+<!--      <h3>إضافة حصة</h3>-->
+<!--      <p>جدولة حصة جديدة</p>-->
+<!--    </a>-->
+
+    <a href="/payments" class="nav-card">
+      <div class="icon">💰</div>
+      <h3>المدفوعات</h3>
+      <p>تتبع المدفوعات</p>
+    </a>
+
+    <a href="/payments/add" class="nav-card">
+      <div class="icon">💵</div>
+      <h3>تسجيل دفعة</h3>
+      <p>تسجيل دفعة جديدة</p>
+    </a>
+
+
+  </div>
+</div>
+</body>
+</html>

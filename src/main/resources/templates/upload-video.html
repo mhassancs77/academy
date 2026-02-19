@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفع درس جديد</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .file-input-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .file-selected {
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-bar-bg {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .progress-status {
+            margin-top: 10px;
+            text-align: center;
+            color: #4a5568;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .char-count {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">📹 رفع درس جديد</div>
+            <a href="/videos" class="btn-back">← العودة للدروس</a>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="card">
+        <div th:if="${error}" class="alert alert-error">
+            ❌ <span th:text="${error}">خطأ</span>
+        </div>
+
+        <form id="uploadForm" action="/upload-video" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">عنوان الدرس *</label>
+                <input type="text"
+                       id="title"
+                       name="title"
+                       required
+                       maxlength="100"
+                       placeholder="مثال: الدرس الأول - المقدمة"
+                       oninput="updateTitleCount(this)">
+                <div class="char-count">
+                    <span id="titleCount">0</span> / 100 حرف
+                </div>
+            </div>
+
+<!--            <div class="form-group">-->
+<!--                <label for="subject">المادة الدراسية *</label>-->
+<!--                <input type="text"-->
+<!--                       id="subject"-->
+<!--                       name="subject"-->
+<!--                       required-->
+<!--                       maxlength="50"-->
+<!--                       placeholder="مثال: الرياضيات">-->
+<!--            </div>-->
+
+            <div class="form-group">
+                <label for="gradeLevel">المستوى الدراسي *</label>
+                <select id="gradeLevel" name="gradeLevel" required>
+                    <option value="" disabled selected>اختر المستوى</option>
+                    <option value="1">الصف الأول</option>
+                    <option value="2">الصف الثاني</option>
+                    <option value="3">الصف الثالث</option>
+                    <option value="4">الصف الرابع</option>
+                    <option value="5">الصف الخامس</option>
+                    <option value="6">الصف السادس</option>
+                </select>
+            </div>
+
+
+
+
+
+
+            <div class="form-group">
+                <label for="description">الوصف (اختياري)</label>
+                <textarea id="description"
+                          name="description"
+                          rows="4"
+                          maxlength="500"
+                          placeholder="وصف مختصر عن محتوى الدرس..."
+                          oninput="updateDescCount(this)"></textarea>
+                <div class="char-count">
+                    <span id="descCount">0</span> / 500 حرف
+                </div>
+            </div>
+
+
+            <!-- Source Type Selector -->
+            <div class="form-group">
+                <label>مصدر الفيديو *</label>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<!--                    <label class="source-option" disabled onclick="switchSource('LOCAL')">-->
+<!--                        <input type="radio"  disabled name="sourceType" value="LOCAL" >-->
+<!--                        💾 رفع ملف-->
+<!--                    </label>-->
+                    <label class="source-option" onclick="switchSource('YOUTUBE')">
+                        <input type="radio" name="sourceType" value="YOUTUBE" checked>
+                        ▶️ يوتيوب
+                    </label>
+<!--                    <label class="source-option" disabled  onclick="switchSource('GOOGLE_DRIVE')">-->
+<!--                        <input type="radio" disabled name="sourceType" value="GOOGLE_DRIVE">-->
+<!--                        📁 Google Drive-->
+<!--                    </label>-->
+<!--                    <label class="source-option" disabled onclick="switchSource('EXTERNAL')">-->
+<!--                        <input type="radio" disabled name="sourceType" value="EXTERNAL">-->
+<!--                        🔗 رابط خارجي-->
+<!--                    </label>-->
+                </div>
+            </div>
+
+            <!-- LOCAL: existing file input (keep as-is, just wrap in a div) -->
+            <div id="localSection" style="display: none;">
+                <div class="form-group">
+                    <label for="videoFile">ملف الفيديو *</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-input-icon">📹</div>
+                        <div>اضغط لاختيار ملف الفيديو</div>
+                        <div style="color: #718096; font-size: 0.9rem; margin-top: 5px;">
+                            الحد الأقصى: 500 ميجابايت | الصيغ المدعومة: MP4, AVI, MOV
+                        </div>
+                        <div class="file-selected" id="fileSelected"></div>
+                        <input type="file"
+                               id="videoFile"
+                               name="video"
+                               accept="video/*"
+                               onchange="handleFileSelect(this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXTERNAL: URL input (hidden by default) -->
+            <div id="externalSection" >
+                <div class="form-group">
+                    <label for="externalUrl">رابط الفيديو *</label>
+                    <input type="url"
+                           id="externalUrl"
+                           name="externalUrl"
+                           placeholder="https://..."
+                           style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    <div style="color: #718096; font-size: 0.85rem; margin-top: 6px;" id="urlHint">
+                        <!-- hint updated dynamically by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+                <div class="progress-status" id="progressStatus">
+                    جاري رفع الملف...
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    📤 رفع الدرس
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let selectedFile = null;
+
+    // ===== SOURCE TYPE SWITCHING =====
+    const urlHints = {
+        YOUTUBE:      'مثال: https://www.youtube.com/embed/VIDEO_ID  ← تأكد أنه رابط embed وليس watch',
+        GOOGLE_DRIVE: 'مثال: https://drive.google.com/file/d/FILE_ID/preview',
+        EXTERNAL:     'مثال: https://example.com/video.mp4',
+        S3:           'مثال: https://bucket-name.s3.amazonaws.com/video.mp4',
+        LOCAL:        ''
+    };
+
+    function switchSource(type) {
+        const isLocal = type === 'LOCAL';
+        document.getElementById('localSection').style.display    = isLocal ? 'block' : 'none';
+        document.getElementById('externalSection').style.display = isLocal ? 'none'  : 'block';
+        document.getElementById('urlHint').textContent = urlHints[type] || '';
+
+        // file input is only required for LOCAL
+        document.getElementById('videoFile').required = isLocal;
+
+        // clear any previous selection/error when switching
+        if (!isLocal) {
+            selectedFile = null;
+            document.getElementById('fileSelected').innerHTML = '';
+        } else {
+            document.getElementById('externalUrl').value = '';
+        }
+    }
+
+    // ===== FILE SELECTION (LOCAL only) =====
+    function handleFileSelect(input) {
+        const file = input.files[0];
+        selectedFile = file;
+
+        if (file) {
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+            if (file.size > 500 * 1024 * 1024) {
+                alert('حجم الملف كبير جداً! الحد الأقصى 500 ميجابايت');
+                input.value   = '';
+                selectedFile  = null;
+                document.getElementById('fileSelected').innerHTML = '';
+                return;
+            }
+
+            if (!file.type.startsWith('video/')) {
+                alert('يرجى اختيار ملف فيديو صالح');
+                input.value   = '';
+                selectedFile  = null;
+                document.getElementById('fileSelected').innerHTML = '';
+                return;
+            }
+
+            document.getElementById('fileSelected').innerHTML =
+                `✅ تم اختيار: ${file.name} (${sizeMB} ميجابايت)`;
+        }
+    }
+
+    // ===== CHARACTER COUNTERS =====
+    function updateTitleCount(input) {
+        document.getElementById('titleCount').textContent = input.value.length;
+    }
+
+    function updateDescCount(textarea) {
+        document.getElementById('descCount').textContent = textarea.value.length;
+    }
+
+    // ===== FORM SUBMIT =====
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const sourceType = document.querySelector('input[name="sourceType"]:checked').value;
+        const isLocal    = sourceType === 'LOCAL';
+
+        // ----- EXTERNAL / YOUTUBE / DRIVE / S3 -----
+        // No file upload needed → plain form submit, no XHR, no progress bar
+        if (!isLocal) {
+            const url = document.getElementById('externalUrl').value.trim();
+            if (!url) {
+                alert('يرجى إدخال رابط الفيديو');
+                return;
+            }
+            // basic URL sanity check
+            try { new URL(url); }
+            catch (_) {
+                alert('الرابط غير صالح. يرجى إدخال رابط كامل يبدأ بـ https://');
+                return;
+            }
+            this.submit();   // plain HTML submit — fast, no XHR needed
+            return;
+        }
+
+        // ----- LOCAL FILE UPLOAD -----
+        if (!selectedFile) {
+            alert('يرجى اختيار ملف فيديو');
+            return;
+        }
+
+        const formData = new FormData(this);
+        const xhr      = new XMLHttpRequest();
+
+        // show progress bar
+        document.getElementById('progressContainer').style.display = 'block';
+        document.getElementById('submitBtn').disabled    = true;
+        document.getElementById('submitBtn').textContent = 'جاري الرفع...';
+
+        // progress events
+        xhr.upload.addEventListener('progress', function (e) {
+            if (e.lengthComputable) {
+                const pct      = Math.round((e.loaded / e.total) * 100);
+                const loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+                const totalMB  = (e.total  / (1024 * 1024)).toFixed(2);
+
+                document.getElementById('progressBar').style.width = pct + '%';
+                document.getElementById('progressBar').textContent = pct + '%';
+                document.getElementById('progressStatus').textContent =
+                    `جاري الرفع: ${loadedMB} / ${totalMB} ميجابايت`;
+            }
+        });
+
+        // success
+        xhr.addEventListener('load', function () {
+            if (xhr.status === 200 || xhr.status === 302) {
+                document.getElementById('progressStatus').textContent = '✅ تم الرفع بنجاح!';
+                window.location.href = '/videos?success=uploaded';
+            } else {
+                alert('فشل رفع الملف. يرجى المحاولة مرة أخرى');
+                resetForm();
+            }
+        });
+
+        // network error
+        xhr.addEventListener('error', function () {
+            alert('حدث خطأ في الشبكة أثناء الرفع');
+            resetForm();
+        });
+
+        xhr.open('POST', '/upload-video');
+        xhr.send(formData);
+    });
+
+    // ===== RESET HELPERS =====
+    function resetForm() {
+        document.getElementById('progressContainer').style.display = 'none';
+        document.getElementById('submitBtn').disabled    = false;
+        document.getElementById('submitBtn').textContent = '📤 رفع الدرس';
+        document.getElementById('progressBar').style.width  = '0%';
+        document.getElementById('progressBar').textContent  = '0%';
+    }
+</script>
+</body>
+</html>

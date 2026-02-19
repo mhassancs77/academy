@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المعلم</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .logo-large {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-box h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box h2 {
+            color: #4c51bf;
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: right;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border-left: 4px solid #fc8181;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #48bb78;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-align: right;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4c51bf;
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 81, 191, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .links a {
+            color: #4c51bf;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            margin: 0 0.5rem;
+        }
+
+        .links a:hover {
+            color: #667eea;
+        }
+
+        .divider {
+            margin: 1.5rem 0;
+            text-align: center;
+            color: #718096;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1rem;
+            }
+
+            .login-box {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo-large {
+                font-size: 4rem;
+            }
+
+            .login-box h1 {
+                font-size: 1.5rem;
+            }
+
+            .login-box h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:if="${param.expired}"
+     style="position: fixed; top: 20px; right: 20px; left: 20px; z-index: 9999; background: #fed7d7; color: #742a2a; padding: 15px 20px; border-radius: 8px; text-align: center; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    ⏱️ انتهت جلستك. يرجى تسجيل الدخول مرة أخرى
+    <button onclick="this.parentElement.style.display='none'"
+            style="float: left; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #742a2a;">
+        ×
+    </button>
+</div>
+
+<div class="login-container">
+    <div class="login-box">
+        <div class="logo-large">🎓</div>
+        <h1>أكاديمية تدريس</h1>
+        <h2>بوابة المعلمين</h2>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <!-- Success Message (after registration) -->
+        <div th:if="${param.registered}" class="alert alert-success">
+            تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول
+        </div>
+
+        <!-- Success Message (after logout) -->
+        <div th:if="${param.logout}" class="alert alert-success">
+            تم تسجيل الخروج بنجاح
+        </div>
+
+        <form action="/admin/login" method="post">
+            <div class="form-group">
+                <label>اسم المستخدم</label>
+                <input type="text" name="username" required
+                       placeholder="مثال: ahmed_teacher"
+                       class="form-input"
+                       autofocus>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <input type="password" name="password" required
+                       placeholder="••••••"
+                       class="form-input">
+            </div>
+
+            <button type="submit" class="btn-submit">🔓 دخول</button>
+        </form>
+
+        <div class="links">
+            <a href="/register">إنشاء حساب جديد</a>
+        </div>
+
+        <div class="divider">───────</div>
+
+        <div class="links">
+            <a href="/student/login">بوابة الطلاب ←</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

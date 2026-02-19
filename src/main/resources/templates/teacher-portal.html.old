@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="'بوابة ' + ${teacherName}">بوابة المعلم</title>
+  <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .portal-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .teacher-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 20px;
+        }
+
+        .portal-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .portal-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .portal-body {
+            padding: 40px 30px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .welcome-message h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #718096;
+        }
+
+        .login-form {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .portal-footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            font-size: 0.9rem;
+            background: #f7fafc;
+        }
+
+        @media (max-width: 600px) {
+            .portal-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .teacher-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="portal-container">
+  <div class="portal-header">
+    <div class="teacher-icon">👨‍🏫</div>
+    <h1 th:text="${teacherName}">اسم المعلم</h1>
+    <p th:text="${teacherSubject}">المادة الدراسية</p>
+  </div>
+
+  <div class="portal-body">
+    <div class="welcome-message">
+      <h2>مرحباً بك في بوابة الدروس</h2>
+      <p>قم بتسجيل الدخول لمشاهدة دروسك</p>
+    </div>
+
+    <div th:if="${error}" class="error-message" th:text="${error}">
+      رسالة خطأ
+    </div>
+
+    <form th:action="@{/teacher/{portalId}/login(portalId=${portalId})}"
+          method="post"
+          class="login-form">
+
+      <input type="hidden" name="teacherId" th:value="${teacherId}">
+
+      <div class="form-group">
+        <label for="username">اسم المستخدم</label>
+        <input type="text"
+               id="username"
+               name="username"
+               required
+               placeholder="أدخل اسم المستخدم"
+               autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <input type="password"
+               id="password"
+               name="password"
+               required
+               placeholder="أدخل كلمة المرور"
+               autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn-login">
+        تسجيل الدخول
+      </button>
+    </form>
+  </div>
+
+  <div class="portal-footer">
+    <p>منصة الأكاديمية التعليمية © 2026</p>
+  </div>
+</div>
+</body>
+</html>

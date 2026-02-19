@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${video.title}">مشاهدة الدرس</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .player-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .video-header {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .video-title {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.95rem;
+            color: #718096;
+            flex-wrap: wrap;
+        }
+
+        .video-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .video-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+
+        .video-description {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .video-description h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .video-description p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .comments-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .comments-header h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+        }
+
+        .comments-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .add-comment-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .char-count {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+
+        .btn-submit-comment {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit-comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border-right: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .comment-card.own-comment {
+            background: #e6fffa;
+            border-right-color: #38b2ac;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-name::before {
+            content: "👤";
+            font-size: 1.2rem;
+        }
+
+        .own-badge {
+            background: #38b2ac;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 8px;
+        }
+
+        .comment-time {
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+
+        .comment-text {
+            color: #4a5568;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .comment-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-delete-comment {
+            background: #fc8181;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-delete-comment:hover {
+            background: #f56565;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .no-comments .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        @media (max-width: 768px) {
+            .video-title {
+                font-size: 1.4rem;
+            }
+
+            .comments-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .video-meta {
+                flex-wrap: wrap;
+            }
+
+            .form-group textarea {
+                min-height: 80px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+
+            .btn-submit-comment {
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1rem 0;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .player-container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            .video-header, .video-wrapper, .video-description, .comments-section {
+                border-radius: 10px;
+            }
+
+            .video-header {
+                padding: 20px;
+            }
+
+            .video-title {
+                font-size: 1.2rem;
+            }
+
+            .video-meta {
+                font-size: 0.85rem;
+            }
+
+            .comments-section {
+                padding: 20px 15px;
+            }
+
+            .comment-card {
+                padding: 15px;
+            }
+
+            .add-comment-form {
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <a href="/student/videos" class="btn-back">← العودة للدروس</a>
+    </div>
+</div>
+
+<div class="player-container">
+    <!-- Success/Error Messages -->
+    <div th:if="${param.success}" class="alert alert-success">
+        ✅ <span th:text="${param.success[0]}">تم بنجاح</span>
+    </div>
+    <div th:if="${param.error}" class="alert alert-error">
+        ❌ <span th:text="${param.error[0]}">حدث خطأ</span>
+    </div>
+
+    <!-- Video Header -->
+    <div class="video-header">
+        <h1 class="video-title" th:text="${video.title}">عنوان الدرس</h1>
+        <div class="video-meta">
+            <span>📚 <span th:text="${video.gradeLevel}">المستوى</span></span>
+            <span>📅 <span th:text="${#temporals.format(video.createdAt, 'dd/MM/yyyy')}">التاريخ</span></span>
+        </div>
+    </div>
+
+    <!-- before: <div class="video-wrapper"> with hardcoded /student/videos/{id}/stream -->
+
+    <!-- LOCAL: HTML5 player -->
+    <div class="video-wrapper" th:if="${video.localVideo}">
+        <video controls controlsList="nodownload">
+            <source th:src="@{/student/videos/{id}/stream(id=${video.id})}" type="video/mp4">
+            المتصفح لا يدعم تشغيل الفيديو
+        </video>
+    </div>
+
+    <!-- YOUTUBE: iframe embed -->
+    <div class="video-wrapper" th:if="${video.youTubeVideo}">
+        <iframe oncontextmenu="return false;"
+                th:src="${video.externalUrl}"
+                width="100%"
+                height="480"
+                frameborder="0"
+                allowfullscreen
+                referrerpolicy="strict-origin"
+                sandbox="allow-scripts allow-same-origin allow-presentation">
+        </iframe>
+    </div>
+
+    <!-- GOOGLE_DRIVE / S3 / EXTERNAL -->
+    <div class="video-wrapper" th:if="${!video.localVideo and !video.youTubeVideo}">
+        <video controls controlsList="nodownload">
+            <source th:src="${video.externalUrl}" type="video/mp4">
+            المتصفح لا يدعم تشغيل الفيديو
+        </video>
+    </div>
+    <!-- Description -->
+    <div class="video-description" th:if="${video.description}">
+        <h3>📝 الوصف</h3>
+        <p th:text="${video.description}">وصف الدرس</p>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <h3>💬 التعليقات</h3>
+            <span class="comments-count" th:text="${commentsCount} + ' تعليق'">0 تعليق</span>
+        </div>
+
+        <!-- Add Comment Form -->
+        <form id="commentForm" class="add-comment-form">
+            <input type="hidden" name="videoId" th:value="${video.id}" id="videoId">
+            <div class="form-group">
+                    <textarea name="commentText"
+                              id="commentText"
+                              placeholder="أضف تعليقك هنا... (حد أقصى 500 حرف)"
+                              maxlength="500"
+                              required
+                              oninput="updateCharCount(this)"></textarea>
+                <div class="char-count">
+                    <span id="charCount">0</span> / 500 حرف
+                </div>
+            </div>
+            <button type="submit" class="btn-submit-comment" id="submitBtn">
+                📤 إضافة تعليق
+            </button>
+        </form>
+
+        <!-- Alert Messages -->
+        <div id="alertMessage" style="display: none; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;"></div>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="commentsList" th:if="${!comments.isEmpty()}">
+            <div class="comment-card"
+                 th:each="comment : ${comments}"
+                 th:classappend="${comment.studentId == studentId} ? 'own-comment' : ''"
+                 th:id="'comment-' + ${comment.id}">
+                <div class="comment-header">
+                        <span class="student-name">
+                            <span th:text="${comment.studentName}">اسم الطالب</span>
+                            <span class="own-badge" th:if="${comment.studentId == studentId}">أنت</span>
+                        </span>
+                    <span class="comment-time" th:text="${comment.relativeTime}">منذ ساعة</span>
+                </div>
+                <div class="comment-text" th:text="${comment.commentText}">
+                    نص التعليق
+                </div>
+                <div class="comment-actions" th:if="${comment.studentId == studentId}">
+                    <button onclick="deleteComment([[${comment.id}]])" class="btn-delete-comment">
+                        🗑️ حذف
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-comments" id="noComments" th:if="${comments.isEmpty()}">
+            <div class="icon">💭</div>
+            <p>كن أول من يعلق على هذا الدرس!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+        const studentId = [[${studentId}]];
+        const studentName = "[[${studentName}]]";
+        const videoId = [[${video.id}]];
+
+        function updateCharCount(textarea) {
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = textarea.value.length;
+
+            if (textarea.value.length > 450) {
+                charCount.style.color = '#e53e3e';
+            } else {
+                charCount.style.color = '#a0aec0';
+            }
+        }
+
+        // Submit comment via AJAX
+        document.getElementById('commentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const commentText = document.getElementById('commentText').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (!commentText) {
+                showAlert('التعليق فارغ', 'error');
+                return;
+            }
+
+            if (commentText.length > 500) {
+                showAlert('التعليق طويل جداً (الحد الأقصى 500 حرف)', 'error');
+                return;
+            }
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإضافة...';
+
+            try {
+                const formData = new FormData();
+                formData.append('videoId', videoId);
+                formData.append('commentText', commentText);
+
+                const response = await fetch('/comments/add-ajax', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('الرد غير صحيح. قد تكون الجلسة منتهية. يرجى تسجيل الدخول مرة أخرى');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Add comment to list without page reload
+                    addCommentToList(result.comment);
+
+                    // Clear form
+                    document.getElementById('commentText').value = '';
+                    updateCharCount(document.getElementById('commentText'));
+
+                    // Show success message
+                    showAlert('تم إضافة التعليق بنجاح', 'success');
+
+                    // Hide "no comments" message if visible
+                    const noComments = document.getElementById('noComments');
+                    if (noComments) {
+                        noComments.style.display = 'none';
+                    }
+                } else {
+                    showAlert(result.error || 'فشل إضافة التعليق', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(error.message || 'حدث خطأ أثناء إضافة التعليق', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 إضافة تعليق';
+            }
+        });
+
+        // Add comment to list dynamically
+        function addCommentToList(comment) {
+            const commentsList = document.getElementById('commentsList');
+
+            // Create comments list if it doesn't exist
+            if (!commentsList) {
+                const newList = document.createElement('div');
+                newList.className = 'comments-list';
+                newList.id = 'commentsList';
+                document.querySelector('.comments-section').appendChild(newList);
+            }
+
+            const commentCard = document.createElement('div');
+            commentCard.className = 'comment-card own-comment';
+            commentCard.id = 'comment-' + comment.id;
+            commentCard.innerHTML = `
+                <div class="comment-header">
+                    <span class="student-name">
+                        <span>${comment.studentName}</span>
+                        <span class="own-badge">أنت</span>
+                    </span>
+                    <span class="comment-time">الآن</span>
+                </div>
+                <div class="comment-text">${escapeHtml(comment.commentText)}</div>
+                <div class="comment-actions">
+                    <button onclick="deleteComment(${comment.id})" class="btn-delete-comment">
+                        🗑️ حذف
+                    </button>
+                </div>
+            `;
+
+            const list = document.getElementById('commentsList') || document.createElement('div');
+            list.insertBefore(commentCard, list.firstChild);
+
+            // Update count
+            updateCommentsCount();
+        }
+
+        // Delete comment via AJAX
+        async function deleteComment(commentId) {
+            if (!confirm('هل أنت متأكد من حذف هذا التعليق؟')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/comments/${commentId}/delete-ajax`, {
+                    method: 'POST'
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('الرد غير صحيح. قد تكون الجلسة منتهية');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Remove comment from DOM
+                    const commentCard = document.getElementById('comment-' + commentId);
+                    if (commentCard) {
+                        commentCard.style.transition = 'all 0.3s';
+                        commentCard.style.opacity = '0';
+                        commentCard.style.transform = 'translateX(20px)';
+
+                        setTimeout(() => {
+                            commentCard.remove();
+                            updateCommentsCount();
+
+                            // Show "no comments" if list is empty
+                            const commentsList = document.getElementById('commentsList');
+                            if (commentsList && commentsList.children.length === 0) {
+                                const noComments = document.getElementById('noComments');
+                                if (noComments) {
+                                    noComments.style.display = 'block';
+                                }
+                            }
+                        }, 300);
+                    }
+
+                    showAlert('تم حذف التعليق', 'success');
+                } else {
+                    showAlert(result.error || 'فشل حذف التعليق', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(error.message || 'حدث خطأ أثناء حذف التعليق', 'error');
+            }
+        }
+
+        // Update comments count
+        function updateCommentsCount() {
+            const commentsList = document.getElementById('commentsList');
+            const count = commentsList ? commentsList.children.length : 0;
+            const countElement = document.querySelector('.comments-count');
+            if (countElement) {
+                countElement.textContent = count + ' تعليق';
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alertMessage');
+            alert.textContent = (type === 'success' ? '✅ ' : '❌ ') + message;
+            alert.style.display = 'block';
+            alert.style.background = type === 'success' ? '#c6f6d5' : '#fed7d7';
+            alert.style.color = type === 'success' ? '#22543d' : '#742a2a';
+
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

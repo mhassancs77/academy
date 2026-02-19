@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">أكاديمية تدريس</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f7fafc;
+        }
+
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #4c51bf;
+            color: white;
+            padding: 1rem;
+        }
+
+        .main-wrapper {
+            margin-right: 240px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <h2>🎓 أكاديمية</h2>
+    <p th:text="${fullName}">المعلم</p>
+
+    <nav>
+        <a href="/dashboard">لوحة التحكم</a>
+        <a href="/students">الطلاب</a>
+        <a href="/videos">الدروس</a>
+    </nav>
+</aside>
+
+<!-- Main -->
+<div class="main-wrapper">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <h1 th:text="${pageTitle}">العنوان</h1>
+    </div>
+
+    <!-- ✅ PAGE CONTENT FRAGMENT -->
+    <div class="content"
+         th:fragment="content(pageContent)">
+
+        <!-- Inject child page here -->
+        <th:block th:replace="${pageContent}"></th:block>
+
+    </div>
+</div>
+
+</body>
+</html>

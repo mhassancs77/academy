@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إضافة طالب</title>
+  <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma; background: #f5f5f5; }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-bottom: 30px;
+        }
+
+        .header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; color: #4c51bf; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-back {
+            background: #718096;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            background: #f56565;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .required {
+            color: #f56565;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4c51bf;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #4c51bf;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #434190;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <div class="logo">🎓 أكاديمية تدريس</div>
+    <div class="header-right">
+      <a href="/students" class="btn-back">قائمة الطلاب</a>
+      <a href="/logout" class="btn-logout">خروج</a>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <h1>إضافة طالب جديد</h1>
+
+  <div class="form-container">
+    <form action="/students/add" method="post">
+
+      <div class="form-group">
+        <label>اسم الطالب <span class="required">*</span></label>
+        <input type="text"
+               name="fullName"
+               class="form-input"
+               placeholder="اسم الطالب بالكامل"
+               required>
+      </div>
+
+      <div class="form-group">
+        <label>رقم هاتف الطالب <span class="required">*</span></label>
+        <input type="text"
+               name="phone"
+               class="form-input"
+               placeholder="رقم هاتف الطالب"
+               required>
+      </div>
+
+      <div class="form-group">
+        <label>رقم هاتف ولي الأمر <span class="required">*</span></label>
+        <input type="text"
+               name="parentPhone"
+               class="form-input"
+               placeholder="رقم هاتف ولي الأمر"
+               required>
+      </div>
+
+      <div class="form-group">
+        <label>الصف الدراسي <span class="required">*</span></label>
+        <select name="gradeLevel"
+                class="form-input"
+                required>
+
+          <option value="" disabled selected>
+            اختر الصف الدراسي
+          </option>
+
+          <option value="1">الصف الأول</option>
+          <option value="2">الصف الثاني</option>
+          <option value="3">الصف الثالث</option>
+          <option value="4">الصف الرابع</option>
+          <option value="5">الصف الخامس</option>
+          <option value="6">الصف السادس</option>
+
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ملاحظات (اختياري)</label>
+        <textarea name="notes"
+                  class="form-input"
+                  placeholder="أي ملاحظات إضافية عن الطالب"></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        إضافة الطالب
+      </button>
+
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الطلاب</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma; background: #f5f5f5; }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-back, .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover, .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #2d3748;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .filter-select, .filter-input {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-clear-filter {
+            background: #e2e8f0;
+            color: #2d3748;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            align-self: end;
+        }
+
+        .btn-clear-filter:hover {
+            background: #cbd5e0;
+        }
+
+        .results-count {
+            color: #718096;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .account-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .has-account {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .no-account {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-create-account, .btn-view-account {
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-create-account {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-create-account:hover {
+            background: #5568d3;
+        }
+
+        .btn-view-account {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-view-account:hover {
+            background: #38a169;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #718096;
+        }
+
+        .empty-state .icon {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">🎓 أكاديمية تدريس</div>
+            <div class="header-right">
+                <a href="/dashboard" class="btn-back">لوحة التحكم</a>
+                <a href="/logout" class="btn-logout">خروج</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>الطلاب</h1>
+        <a href="/students/add" class="btn-primary">+ إضافة طالب</a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label for="searchInput">🔍 البحث بالاسم</label>
+                <input type="text"
+                       id="searchInput"
+                       class="filter-input"
+                       placeholder="ابحث عن طالب..."
+                       onkeyup="filterStudents()">
+            </div>
+            <div class="filter-group">
+                <label for="gradeFilter">📚 تصفية حسب المستوى</label>
+                <select id="gradeFilter" class="filter-select" onchange="filterStudents()">
+                    <option value="">جميع المستويات</option>
+                    <option value="الصف الأول">الصف الأول</option>
+                    <option value="الصف الثاني">الصف الثاني</option>
+                    <option value="الصف الثالث">الصف الثالث</option>
+                    <option value="الصف الرابع">الصف الرابع</option>
+                    <option value="الصف الخامس">الصف الخامس</option>
+                    <option value="الصف السادس">الصف السادس</option>
+                </select>
+            </div>
+            <button class="btn-clear-filter" onclick="clearFilters()">
+                ✖ مسح الفلاتر
+            </button>
+        </div>
+        <div class="results-count" id="resultsCount"></div>
+    </div>
+
+    <div class="table-container" th:if="${!students.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>التليفون</th>
+                <th>رقم ولي الأمر</th>
+                <th>المستوى</th>
+                <th>حالة الحساب</th>
+                <th>الإجراءات</th>
+            </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+            <tr th:each="student, iterStat : ${students}"
+                class="student-row"
+                th:attr="data-name=${student.fullName}, data-grade=${student.gradeLevel}">
+                <td th:text="${iterStat.count}">1</td>
+                <td th:text="${student.fullName}">أحمد محمد</td>
+                <td th:text="${student.phone}">01234567890</td>
+                <td th:text="${student.parentPhone}">01012345678</td>
+                <td>
+                    <span th:text="${student.gradeLevel}">الصف الأول</span>
+                </td>
+                <td>
+                            <span th:if="${student.hasAccount}" class="account-status has-account">
+                                ✅ لديه حساب
+                            </span>
+                    <span th:unless="${student.hasAccount}" class="account-status no-account">
+                                ❌ لا يوجد حساب
+                            </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:if="${!student.hasAccount}"
+                           th:href="@{/students/{id}/create-account(id=${student.id})}"
+                           class="btn-create-account">
+                            🔑 إنشاء حساب
+                        </a>
+                        <a th:if="${student.hasAccount}"
+                           th:href="@{/students/{id}/account(id=${student.id})}"
+                           class="btn-view-account">
+                            👁️ عرض الحساب
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" th:if="${students.isEmpty()}">
+        <div class="icon">👥</div>
+        <h3>لا يوجد طلاب بعد</h3>
+        <p>ابدأ بإضافة أول طالب</p>
+        <br>
+        <a href="/students/add" class="btn-primary">إضافة طالب</a>
+    </div>
+</div>
+
+<script>
+        function filterStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const gradeFilter = document.getElementById('gradeFilter').value;
+            const rows = document.querySelectorAll('.student-row');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name').toLowerCase();
+                const grade = row.getAttribute('data-grade');
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesGrade = !gradeFilter || grade === gradeFilter;
+
+                if (matchesSearch && matchesGrade) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Update results count
+            const totalCount = rows.length;
+            const resultsText = visibleCount === totalCount
+                ? `عرض جميع الطلاب (${totalCount})`
+                : `عرض ${visibleCount} من ${totalCount} طالب`;
+            document.getElementById('resultsCount').textContent = resultsText;
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('gradeFilter').value = '';
+            filterStudents();
+        }
+
+        // Initialize count on page load
+        window.addEventListener('load', filterStudents);
+    </script>
+</body>
+</html>
