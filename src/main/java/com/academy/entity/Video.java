@@ -32,8 +32,8 @@ public class Video {
     private String externalUrl;           // ← NEW: for YouTube/Drive/S3/External URLs
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "source_type", nullable = false, length = 20)
-    private VideoSourceType sourceType = VideoSourceType.LOCAL;  // ← NEW: defaults to LOCAL
+    @Column(name = "source_type", nullable = true, length = 20)
+    private VideoSourceType sourceType ; //= VideoSourceType.LOCAL;  // ← NEW: defaults to LOCAL
 
     @Column(name = "grade_level", length = 50)
     private String gradeLevel;
