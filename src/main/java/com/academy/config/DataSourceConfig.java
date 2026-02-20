@@ -4,12 +4,15 @@ package com.academy.config;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
 import javax.sql.DataSource;
 
 @Configuration
 public class DataSourceConfig {
 
     @Bean
+    @Primary  // ← ADD THIS
     public DataSource dataSource() {
         String pgHost = System.getenv("PGHOST");
         String pgPort = System.getenv("PGPORT");
