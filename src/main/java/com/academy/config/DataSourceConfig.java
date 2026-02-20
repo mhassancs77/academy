@@ -17,9 +17,8 @@ public class DataSourceConfig {
         String pgUser = System.getenv("PGUSER");
         String pgPass = System.getenv("PGPASSWORD");
 
-        // Railway Postgres
         String url = String.format("jdbc:postgresql://%s:%s/%s", pgHost, pgPort, pgDb);
-        System.out.println("✅ Connecting to Railway Postgres: " + pgHost);
+        System.out.println("✅ Connecting to Postgres: " + pgHost);
 
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
