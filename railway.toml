@@ -2,4 +2,4 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "java -jar /app/target/academy-0.0.1-SNAPSHOT.jar"
+startCommand = "java -Dspring.datasource.url=jdbc:postgresql://postgres.railway.internal:5432/railway -Dspring.datasource.username=postgres -Dspring.datasource.password=GGNZoZEHbsKWBPdZHKZFFbQWRHkJeJnJ -Dspring.datas
