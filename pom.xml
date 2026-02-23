@@ -12,7 +12,8 @@
 	<groupId>com</groupId>
 	<artifactId>academy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>academy</name>
+	<name>academyX</name>
+	<!-- rebuild trigger -->
 	<description>Academy teaching platform</description>
 
 	<properties>
